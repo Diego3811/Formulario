@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
-
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login con Firebase</title>
@@ -83,6 +80,7 @@
         <!-- Agregamos las mismas referencias a Firebase que tenías en el código original -->
         <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js"></script>
 
         <script>
             // Configuración de Firebase (la misma que en tu código original)
@@ -97,14 +95,29 @@
             };
             const app = initializeApp(firebaseConfig);
 
+            // Referencia a Firestore
+            const db = getFirestore(app);
+
             // Función para el registro
             function register() {
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
 
-                // Utilizamos el método createUserWithEmailAndPassword para registrar al usuario
+                // Registrar al usuario
                 firebase.auth().createUserWithEmailAndPassword(email, password)
                     .then((userCredential) => {
+                        // Añadir información adicional a Firestore
+                        const userUid = userCredential.user.uid;
+                        const userData = {
+                            email: email,
+                            // Puedes agregar más campos según tus necesidades
+                        };
+
+                        // Agregar documento a Firestore
+                        addDoc(collection(db, 'users'), {
+                            [userUid]: userData
+                        });
+
                         document.getElementById('message').innerText = '';
                         document.querySelector('.enviado').style.display = 'block';
                         setTimeout(() => {
