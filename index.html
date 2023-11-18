@@ -3,133 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login con Firebase</title>
+    <title>Registro con Firebase</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4; /* Color de fondo del cuerpo */
         }
 
-        #login-container {
-            width: 300px;
+        form {
+            background-color: #fff;
             padding: 20px;
-            border: 1px solid #ccc;
             border-radius: 8px;
-            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
         }
 
         input {
             width: 100%;
             padding: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
             box-sizing: border-box;
         }
 
         button {
-            width: 100%;
+            background-color: #4caf50;
+            color: #fff;
             padding: 10px;
-            background-color: #4CAF50;
-            color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
         }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        #message {
-            color: red;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .enviado {
-            background-color: #4CAF50; /* Color de fondo para el estado "enviado" */
-            color: white;
-            text-align: center;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
     </style>
 </head>
 <body>
-    <div id="register-container">
-        <h2>Registro</h2>
-        <form id="register-form">
-            <div id="message"></div>
 
-            <label for="email">Correo electrónico:</label>
-            <input type="email" id="email" name="email" placeholder="Correo electrónico" required />
+<form id="registroForm">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" name="nombre" required>
 
-            <label for="password">Contraseña:</label>
-            <input type="password" id="password" name="password" placeholder="Contraseña" required />
+    <label for="email">Correo electrónico:</label>
+    <input type="email" id="email" name="email" required>
 
-            <div class="enviado" style="display: none;">Registro exitoso</div>
+    <label for="telefono">Teléfono:</label>
+    <input type="tel" id="telefono" name="telefono" required>
 
-            <button type="button" onclick="register()">Registrarse</button>
-        </form>
+    <button type="button" onclick="registrar()">Registrar</button>
+</form>
 
-        <!-- Agregamos las mismas referencias a Firebase que tenías en el código original -->
-        <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-auth.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js"></script>
 
-        <script>
-            // Configuración de Firebase (la misma que en tu código original)
-            const firebaseConfig = {
-                apiKey: "AIzaSyBo9KY-d6QchiLtTHw2zBIFN3euF8XUNsI",
-                authDomain: "form-cd9f0.firebaseapp.com",
-                databaseURL: "https://form-cd9f0-default-rtdb.firebaseio.com",
-                projectId: "form-cd9f0",
-                storageBucket: "form-cd9f0.appspot.com",
-                messagingSenderId: "244186978975",
-                appId: "1:244186978975:web:c005c17d13ad173a7460aa"
-            };
-            const app = initializeApp(firebaseConfig);
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBo9KY-d6QchiLtTHw2zBIFN3euF8XUNsI",
+        authDomain: "form-cd9f0.firebaseapp.com",
+        databaseURL: "https://form-cd9f0-default-rtdb.firebaseio.com",
+        projectId: "form-cd9f0",
+        storageBucket: "form-cd9f0.appspot.com",
+        messagingSenderId: "244186978975",
+        appId: "1:244186978975:web:c005c17d13ad173a7460aa"
+    };
 
-            // Referencia a Firestore
-            const db = getFirestore(app);
+    // Inicializar Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
-            // Función para el registro
-            function register() {
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
+    function registrar() {
+        const nombre = document.getElementById('nombre').value;
+        const email = document.getElementById('email').value;
+        const telefono = document.getElementById('telefono').value;
 
-                // Registrar al usuario
-                firebase.auth().createUserWithEmailAndPassword(email, password)
-                    .then((userCredential) => {
-                        // Añadir información adicional a Firestore
-                        const userUid = userCredential.user.uid;
-                        const userData = {
-                            email: email,
-                            // Puedes agregar más campos según tus necesidades
-                        };
+        // Guardar datos en Firebase Realtime Database
+        database.ref('registros').push({
+            nombre: nombre,
+            email: email,
+            telefono: telefono
+        });
 
-                        // Agregar documento a Firestore
-                        addDoc(collection(db, 'users'), {
-                            [userUid]: userData
-                        });
+        alert('Registro exitoso');
+    }
+</script>
 
-                        document.getElementById('message').innerText = '';
-                        document.querySelector('.enviado').style.display = 'block';
-                        setTimeout(() => {
-                            document.querySelector('.enviado').style.display = 'none';
-                        }, 3000);
-                    })
-                    .catch((error) => {
-                        const errorMessage = error.message;
-                        document.getElementById('message').innerText = errorMessage;
-                    });
-            }
-        </script>
-    </div>
 </body>
 </html>
