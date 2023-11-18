@@ -63,45 +63,57 @@
         }
     </style>
 </head>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro con Firebase</title>
+    <style>
+        /* Estilos (los mismos que en tu código original) */
+    </style>
+</head>
 <body>
-    <div id="login-container">
-        <h2>Login</h2>
-        <form id="login-form">
+    <div id="register-container">
+        <h2>Registro</h2>
+        <form id="register-form">
             <div id="message"></div>
+
             <label for="email">Correo electrónico:</label>
             <input type="email" id="email" name="email" placeholder="Correo electrónico" required />
 
             <label for="password">Contraseña:</label>
             <input type="password" id="password" name="password" placeholder="Contraseña" required />
 
-            <div class="enviado" style="display: none;">Inicio de sesión exitoso</div>
+            <div class="enviado" style="display: none;">Registro exitoso</div>
 
-            <button type="button" onclick="login()">Iniciar sesión</button>
+            <button type="button" onclick="register()">Registrarse</button>
         </form>
 
+        <!-- Agregamos las mismas referencias a Firebase que tenías en el código original -->
         <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.0.1/firebase-auth.js"></script>
 
         <script>
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyBo9KY-d6QchiLtTHw2zBIFN3euF8XUNsI",
-    authDomain: "form-cd9f0.firebaseapp.com",
-    databaseURL: "https://form-cd9f0-default-rtdb.firebaseio.com",
-    projectId: "form-cd9f0",
-    storageBucket: "form-cd9f0.appspot.com",
-    messagingSenderId: "244186978975",
-    appId: "1:244186978975:web:c005c17d13ad173a7460aa"
-  };
+            // Configuración de Firebase (la misma que en tu código original)
+            const firebaseConfig = {
+                apiKey: "AIzaSyBo9KY-d6QchiLtTHw2zBIFN3euF8XUNsI",
+                authDomain: "form-cd9f0.firebaseapp.com",
+                databaseURL: "https://form-cd9f0-default-rtdb.firebaseio.com",
+                projectId: "form-cd9f0",
+                storageBucket: "form-cd9f0.appspot.com",
+                messagingSenderId: "244186978975",
+                appId: "1:244186978975:web:c005c17d13ad173a7460aa"
+            };
+            const app = initializeApp(firebaseConfig);
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-
-            function login() {
+            // Función para el registro
+            function register() {
                 const email = document.getElementById('email').value;
                 const password = document.getElementById('password').value;
 
-                firebase.auth().signInWithEmailAndPassword(email, password)
+                // Utilizamos el método createUserWithEmailAndPassword para registrar al usuario
+                firebase.auth().createUserWithEmailAndPassword(email, password)
                     .then((userCredential) => {
                         document.getElementById('message').innerText = '';
                         document.querySelector('.enviado').style.display = 'block';
