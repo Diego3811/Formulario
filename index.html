@@ -88,10 +88,10 @@
       </div>
     </div>
     <script type="module">
-        // Importar el módulo de autenticación y base de datos de Firebase
+        // Importar los módulos de Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-auth.js"; // Agregado
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBo9KY-d6QchiLtTHw2zBIFN3euF8XUNsI",
@@ -112,7 +112,7 @@ const auth = getAuth(app);
 // Obtener ref a servicios de base de datos
 const db = getDatabase(app);
 
-document.getElementById("submit").addEventListener("click", function (e) {
+document.getElementById("submit").addEventListener("click", async function (e) {
   e.preventDefault();
 
   // Obtener datos del formulario
@@ -120,28 +120,28 @@ document.getElementById("submit").addEventListener("click", function (e) {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  // Crear un nuevo usuario con correo y contraseña en Firebase Authentication
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Usuario creado exitosamente
-      const user = userCredential.user;
+  try {
+    // Crear un nuevo usuario con correo y contraseña en Firebase Authentication
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-      // Guardar información adicional en la base de datos
-      set(ref(db, "user/" + user.uid), {
-        username: username,
-        email: email,
-        // No almacenar la contraseña directamente en la base de datos
-        // Otras informaciones que desees almacenar...
-      });
+    // Usuario creado exitosamente
+    const user = userCredential.user;
 
-      alert("Registro exitoso!");
-    })
-    .catch((error) => {
-      // Hubo un error en la creación del usuario
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error("Error al crear usuario:", errorCode, errorMessage);
+    // Guardar información adicional en la base de datos
+    await set(ref(db, "user/" + user.uid), {
+      username: username,
+      email: email,
+      // No almacenar la contraseña directamente en la base de datos
+      // Otras informaciones que desees almacenar...
     });
+
+    alert("Registro exitoso!");
+  } catch (error) {
+    // Hubo un error en la creación del usuario
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.error("Error al crear usuario:", errorCode, errorMessage);
+  }
 });
 
     </script>
