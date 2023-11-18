@@ -87,37 +87,19 @@
             <input type="password" value="" id="password" required/>
             <span>Password</span>
           </div>
-          <input type="button" value="Submit" class="sub" id="submit"/>
+          <!-- Cambia el tipo de botón a "submit" -->
+          <input type="submit" value="Submit" class="sub" id="submit"/>
         </form>
       </div>
     </div>
     <script type="module">
-      // Importa las funciones de Firebase
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-app.js";
-      import {
-        getDatabase,
-        ref,
-        set,
-      } from "https://www.gstatic.com/firebasejs/9.19.1/firebase-database.js";
+      // ... (tu script Firebase existente)
+      
+      // Accede al formulario y agrega un evento de envío
+      document.getElementById("loginForm").addEventListener("submit", function (event) {
+        // Evita que el formulario se envíe de forma predeterminada
+        event.preventDefault();
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyBo9KY-d6QchiLtTHw2zBIFN3euF8XUNsI",
-        authDomain: "form-cd9f0.firebaseapp.com",
-        databaseURL: "https://form-cd9f0-default-rtdb.firebaseio.com",
-        projectId: "form-cd9f0",
-        storageBucket: "form-cd9f0.appspot.com",
-        messagingSenderId: "244186978975",
-        appId: "1:244186978975:web:c005c17d13ad173a7460aa",
-      };
-
-      // Inicializa Firebase
-      const app = initializeApp(firebaseConfig);
-
-      //Referencia a la base de datos
-      const db = getDatabase(app);
-
-      // Accede al formulario y agrega un evento de clic al botón de enviar
-      document.getElementById("submit").addEventListener("click", function () {
         // Accede a los campos del formulario
         const username = document.getElementById("username").value;
         const email = document.getElementById("email").value;
@@ -125,7 +107,7 @@
 
         // Verifica que los campos no estén vacíos
         if (username.trim() === "" || email.trim() === "" || password.trim() === "") {
-          alert("Por favor, complete todos los campos.");
+          alert("Please complete all fields.");
           return;
         }
 
@@ -136,7 +118,7 @@
           password: password,
         });
 
-        alert("¡Inicio de sesión exitoso!");
+        alert("¡Successful login!");
       });
     </script>
   </body>
